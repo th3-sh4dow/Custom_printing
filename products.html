@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Products - Custom Printing Hub</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="header-top">
+      <div class="logo">
+        <a href="index.html">
+          <span class="logo-icon"><i class="fa-solid fa-print"></i></span>
+          <span class="logo-text">Custom<span class="orange">Printing</span>Hub</span>
+        </a>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products..."/>
+        <button onclick="filterProducts()"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <div class="header-actions">
+        <a href="upload.html" class="btn-upload"><i class="fa-solid fa-upload"></i> Upload Design</a>
+        <a href="cart.html" class="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+        <a href="#" class="user-icon"><i class="fa-solid fa-user"></i></a>
+      </div>
+    </div>
+    <nav class="nav-bar">
+      <a href="index.html">Home</a>
+      <a href="products.html">All Products</a>
+      <a href="products.html?cat=mugs">Mugs</a>
+      <a href="products.html?cat=tshirts">T-Shirts</a>
+      <a href="products.html?cat=gifts">Gifts</a>
+      <a href="products.html?cat=nameplate">Name Plates</a>
+      <a href="products.html?cat=spiritual">Spiritual Items</a>
+      <a href="upload.html" class="nav-highlight">🎨 Custom Design</a>
+    </nav>
+  </header>
+
+  <a href="https://wa.me/919142927996" target="_blank" class="whatsapp-float">
+    <i class="fa-brands fa-whatsapp"></i><span>Order on WhatsApp</span>
+  </a>
+
+  <div class="page-layout">
+    <!-- SIDEBAR FILTERS -->
+    <aside class="sidebar">
+      <h3>Filters</h3>
+      <div class="filter-group">
+        <h4>Category</h4>
+        <label><input type="radio" name="cat" value="all" onchange="filterProducts()" checked/> All</label>
+        <label><input type="radio" name="cat" value="mugs" onchange="filterProducts()"/> Mugs</label>
+        <label><input type="radio" name="cat" value="tshirts" onchange="filterProducts()"/> T-Shirts</label>
+        <label><input type="radio" name="cat" value="gifts" onchange="filterProducts()"/> Gifts</label>
+        <label><input type="radio" name="cat" value="nameplate" onchange="filterProducts()"/> Name Plates</label>
+        <label><input type="radio" name="cat" value="spiritual" onchange="filterProducts()"/> Spiritual Items</label>
+      </div>
+      <div class="filter-group">
+        <h4>Price Range</h4>
+        <label><input type="radio" name="price" value="all" onchange="filterProducts()" checked/> All</label>
+        <label><input type="radio" name="price" value="0-299" onchange="filterProducts()"/> Under ₹299</label>
+        <label><input type="radio" name="price" value="300-599" onchange="filterProducts()"/> ₹300 - ₹599</label>
+        <label><input type="radio" name="price" value="600-999" onchange="filterProducts()"/> ₹600 - ₹999</label>
+        <label><input type="radio" name="price" value="1000-9999" onchange="filterProducts()"/> Above ₹1000</label>
+      </div>
+      <div class="filter-group">
+        <h4>Sort By</h4>
+        <select id="sortBy" onchange="filterProducts()">
+          <option value="default">Default</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="name">Name A-Z</option>
+        </select>
+      </div>
+    </aside>
+
+    <!-- PRODUCTS AREA -->
+    <main class="products-main">
+      <div class="products-header">
+        <h2 id="pageTitle">All Products</h2>
+        <span id="productCount"></span>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Custom Printing Hub | WhatsApp: +91 91429 27996</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/products.js"></script>
+</body>
+</html>

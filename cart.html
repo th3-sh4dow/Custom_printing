@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart - Custom Printing Hub</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="header-top">
+      <div class="logo">
+        <a href="index.html">
+          <span class="logo-icon"><i class="fa-solid fa-print"></i></span>
+          <span class="logo-text">Custom<span class="orange">Printing</span>Hub</span>
+        </a>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search products..."/>
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <div class="header-actions">
+        <a href="upload.html" class="btn-upload"><i class="fa-solid fa-upload"></i> Upload Design</a>
+        <a href="cart.html" class="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+        <a href="#" class="user-icon"><i class="fa-solid fa-user"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <a href="https://wa.me/919142927996" target="_blank" class="whatsapp-float">
+    <i class="fa-brands fa-whatsapp"></i><span>Order on WhatsApp</span>
+  </a>
+
+  <div class="cart-page">
+    <h2 class="page-heading">My Cart</h2>
+    <div class="cart-layout">
+      <div class="cart-items" id="cartItems">
+        <!-- Filled by JS -->
+      </div>
+      <div class="cart-summary" id="cartSummary">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Custom Printing Hub | WhatsApp: +91 91429 27996</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/cart-page.js"></script>
+</body>
+</html>

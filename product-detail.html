@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Detail - Custom Printing Hub</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="header-top">
+      <div class="logo">
+        <a href="index.html">
+          <span class="logo-icon"><i class="fa-solid fa-print"></i></span>
+          <span class="logo-text">Custom<span class="orange">Printing</span>Hub</span>
+        </a>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search products..."/>
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <div class="header-actions">
+        <a href="upload.html" class="btn-upload"><i class="fa-solid fa-upload"></i> Upload Design</a>
+        <a href="cart.html" class="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+        <a href="#" class="user-icon"><i class="fa-solid fa-user"></i></a>
+      </div>
+    </div>
+    <nav class="nav-bar">
+      <a href="index.html">Home</a>
+      <a href="products.html">All Products</a>
+      <a href="products.html?cat=mugs">Mugs</a>
+      <a href="products.html?cat=tshirts">T-Shirts</a>
+      <a href="products.html?cat=gifts">Gifts</a>
+      <a href="products.html?cat=nameplate">Name Plates</a>
+      <a href="products.html?cat=spiritual">Spiritual Items</a>
+      <a href="upload.html" class="nav-highlight">🎨 Custom Design</a>
+    </nav>
+  </header>
+
+  <a href="https://wa.me/919142927996" target="_blank" class="whatsapp-float">
+    <i class="fa-brands fa-whatsapp"></i><span>Order on WhatsApp</span>
+  </a>
+
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> &rsaquo;
+    <a href="products.html">Products</a> &rsaquo;
+    <span id="breadProduct">Product</span>
+  </div>
+
+  <div class="product-detail-container" id="productDetail">
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  <section class="section">
+    <h2 class="section-title">Related Products</h2>
+    <div class="products-grid" id="relatedProducts"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Custom Printing Hub | WhatsApp: +91 91429 27996</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/product-detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Design - Custom Printing Hub</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="header-top">
+      <div class="logo">
+        <a href="index.html">
+          <span class="logo-icon"><i class="fa-solid fa-print"></i></span>
+          <span class="logo-text">Custom<span class="orange">Printing</span>Hub</span>
+        </a>
+      </div>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+        <a href="#" class="user-icon"><i class="fa-solid fa-user"></i></a>
+      </div>
+    </div>
+    <nav class="nav-bar">
+      <a href="index.html">Home</a>
+      <a href="products.html">All Products</a>
+      <a href="upload.html" class="nav-highlight active">🎨 Custom Design</a>
+    </nav>
+  </header>
+
+  <a href="https://wa.me/919142927996" target="_blank" class="whatsapp-float">
+    <i class="fa-brands fa-whatsapp"></i><span>Order on WhatsApp</span>
+  </a>
+
+  <div class="upload-page">
+    <div class="upload-hero">
+      <h1><i class="fa-solid fa-palette"></i> Upload Your Custom Design</h1>
+      <p>Upload your design, choose your product, and we'll print it for you!</p>
+    </div>
+
+    <div class="upload-layout">
+      <!-- UPLOAD FORM -->
+      <div class="upload-form-section">
+        <h3>Design Details</h3>
+        <form id="uploadForm">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" id="upName" placeholder="Enter your name" required/>
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number *</label>
+            <input type="tel" id="upPhone" placeholder="+91 XXXXX XXXXX" required/>
+          </div>
+          <div class="form-group">
+            <label>Product Type *</label>
+            <select id="upProduct" required>
+              <option value="">-- Select Product --</option>
+              <option value="mug">Custom Mug</option>
+              <option value="tshirt">T-Shirt</option>
+              <option value="nameplate">Name Plate</option>
+              <option value="gift">Gift Item</option>
+              <option value="spiritual">Spiritual Item</option>
+              <option value="other">Other (mention in notes)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" id="upQty" value="1" min="1" max="100"/>
+          </div>
+          <div class="form-group">
+            <label>Upload Design Image</label>
+            <div class="upload-drop-zone" id="dropZone">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <p>Drag & drop your image here</p>
+              <p class="small-text">or</p>
+              <label class="btn-outline" for="fileInput">Browse File</label>
+              <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="previewImage(event)"/>
+            </div>
+            <div id="imagePreview" class="image-preview" style="display:none">
+              <img id="previewImg" src="" alt="Preview"/>
+              <button type="button" onclick="removeImage()" class="remove-img"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Special Instructions / Notes</label>
+            <textarea id="upNotes" placeholder="Color preferences, text to print, size, etc." rows="4"></textarea>
+          </div>
+          <button type="button" onclick="submitUpload()" class="btn-primary full-width">
+            <i class="fa-brands fa-whatsapp"></i> Submit & Send via WhatsApp
+          </button>
+        </form>
+      </div>
+
+      <!-- INSTRUCTIONS PANEL -->
+      <div class="upload-info-panel">
+        <div class="info-card">
+          <h3><i class="fa-brands fa-whatsapp"></i> WhatsApp Order</h3>
+          <p>After submitting, you'll be redirected to WhatsApp to send your design directly to us.</p>
+          <p class="wa-number-big">+91 91429 27996</p>
+          <a href="https://wa.me/919142927996" target="_blank" class="btn-whatsapp-big">
+            <i class="fa-brands fa-whatsapp"></i> Chat with Us
+          </a>
+        </div>
+        <div class="info-card">
+          <h3><i class="fa-solid fa-circle-info"></i> Design Tips</h3>
+          <ul>
+            <li>Use high resolution images (300 DPI+)</li>
+            <li>PNG format preferred for logos</li>
+            <li>JPG/JPEG for photos</li>
+            <li>Minimum size: 1000x1000 px</li>
+            <li>We accept: PNG, JPG, PDF, AI, PSD</li>
+          </ul>
+        </div>
+        <div class="info-card pricing-card">
+          <h3><i class="fa-solid fa-tag"></i> Starting Prices</h3>
+          <div class="price-list">
+            <div class="price-item"><span>Custom Mug</span><span>₹299</span></div>
+            <div class="price-item"><span>T-Shirt</span><span>₹399</span></div>
+            <div class="price-item"><span>Name Plate</span><span>₹349</span></div>
+            <div class="price-item"><span>Gift Items</span><span>₹199</span></div>
+            <div class="price-item"><span>Spiritual Items</span><span>₹249</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Custom Printing Hub | WhatsApp: +91 91429 27996</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/upload.js"></script>
+</body>
+</html>
