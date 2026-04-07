@@ -127,6 +127,20 @@ img { max-width: 100%; }
 .social-links a { font-size: 20px; color: rgba(255,255,255,0.7); }
 .social-links a:hover { color: var(--orange); }
 .footer-bottom { text-align: center; padding: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; }
+.footer-credit { text-align: center; padding: 10px 16px; background: rgba(0,0,0,0.2); font-size: 12px; color: rgba(255,255,255,0.5); }
+.footer-credit a { color: rgba(255,255,255,0.75); text-decoration: underline; }
+.footer-credit a:hover { color: #fff; }
+
+/* ===== WATERMARK POPUP ===== */
+.sfs-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.sfs-popup { background: #fff; border-radius: 16px; padding: 36px 32px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative; }
+.sfs-popup .sfs-logo { font-size: 40px; margin-bottom: 12px; }
+.sfs-popup h2 { font-size: 20px; color: #1565C0; margin-bottom: 8px; }
+.sfs-popup p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 20px; }
+.sfs-popup .sfs-link { display: inline-block; background: #1565C0; color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
+.sfs-popup .sfs-link:hover { background: #0D47A1; }
+.sfs-popup .sfs-dismiss { display: block; margin-top: 12px; font-size: 12px; color: #aaa; cursor: pointer; background: none; border: none; }
+.sfs-popup .sfs-dismiss:hover { color: #666; }
 
 /* ===== PAGE LAYOUT (Products Page) ===== */
 .page-layout { display: flex; gap: 20px; max-width: 1200px; margin: 20px auto; padding: 0 20px; }
