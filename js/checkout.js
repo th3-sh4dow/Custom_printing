@@ -1,5 +1,6 @@
 // ===== CHECKOUT PAGE =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProductsFromAPI();
   renderCheckoutSummary();
 });
 
@@ -29,7 +30,7 @@ function renderCheckoutSummary() {
     ${itemsHtml}
     <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:green">FREE</span>' : '₹' + shipping}</span></div>
     <div class="summary-row total"><span>Total</span><span>₹${total}</span></div>
-    <button onclick="placeOrder(${total})" class="btn-primary full-width" style="margin-top:20px">
+    <button onclick="placeOrder(${subtotal}, ${shipping}, ${total})" class="btn-primary full-width" style="margin-top:20px">
       <i class="fa-solid fa-check"></i> Place Order
     </button>
     <a href="https://wa.me/919142927996?text=Hi! I want to place an order. Total: ₹${total}" target="_blank" class="btn-whatsapp full-width" style="margin-top:10px;display:flex;justify-content:center">
@@ -37,33 +38,50 @@ function renderCheckoutSummary() {
     </a>`;
 }
 
-function placeOrder(total) {
+async function placeOrder(subtotal, shipping, total) {
   const name = document.getElementById('fullName')?.value.trim();
   const phone = document.getElementById('phone')?.value.trim();
+  const email = document.getElementById('email')?.value.trim();
   const address = document.getElementById('address')?.value.trim();
   const city = document.getElementById('city')?.value.trim();
   const state = document.getElementById('state')?.value.trim();
   const pincode = document.getElementById('pincode')?.value.trim();
+  const payment = document.querySelector('input[name="payment"]:checked')?.value || 'cod';
 
   if (!name || !phone || !address || !city || !state || !pincode) {
     showToast('Please fill all required fields', 'error');
     return;
   }
 
-  const orderId = 'CPH' + Date.now().toString().slice(-6);
-  const orderData = {
-    orderId,
-    name, phone, address: `${address}, ${city}, ${state} - ${pincode}`,
-    items: getCart().map(item => {
-      const p = getProductById(item.id);
-      return { name: p?.name, qty: item.qty, price: p?.price };
-    }),
-    total,
-    payment: document.querySelector('input[name="payment"]:checked')?.value || 'cod',
-    date: new Date().toLocaleDateString('en-IN')
-  };
+  const items = getCart().map(item => {
+    const p = getProductById(item.id);
+    return { id: item.id, name: p?.name, qty: item.qty, price: p?.price };
+  }).filter(i => i.name);
 
-  localStorage.setItem('cph_last_order', JSON.stringify(orderData));
-  localStorage.removeItem('cph_cart');
-  window.location.href = 'order-confirmation.html';
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, email, address, city, state, pincode, items, subtotal, shipping, total, payment })
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Error placing order', 'error'); return; }
+
+    // Save for confirmation page
+    localStorage.setItem('cph_last_order', JSON.stringify({
+      orderId: data.orderId, name, phone, address: `${address}, ${city}, ${state} - ${pincode}`,
+      items, total, payment, date: new Date().toLocaleDateString('en-IN')
+    }));
+    localStorage.removeItem('cph_cart');
+    window.location.href = 'order-confirmation.html';
+  } catch {
+    // Fallback if server is down
+    const orderId = 'CPH' + Date.now().toString().slice(-6);
+    localStorage.setItem('cph_last_order', JSON.stringify({
+      orderId, name, phone, address: `${address}, ${city}, ${state} - ${pincode}`,
+      items, total, payment, date: new Date().toLocaleDateString('en-IN')
+    }));
+    localStorage.removeItem('cph_cart');
+    window.location.href = 'order-confirmation.html';
+  }
 }

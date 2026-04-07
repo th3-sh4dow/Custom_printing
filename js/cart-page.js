@@ -1,5 +1,8 @@
 // ===== CART PAGE =====
-document.addEventListener('DOMContentLoaded', renderCart);
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProductsFromAPI();
+  renderCart();
+});
 
 function renderCart() {
   const cart = getCart();

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Custom Printing Hub</title>
+  <link rel="icon" type="image/jpeg" href="images/data/logo.jpeg"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <img src="images/data/logo.jpeg" alt="Logo" class="login-logo"/>
+    <h2>Admin Panel</h2>
+    <p class="login-sub">Custom Printing Hub</p>
+    <div id="loginError" class="alert-error" style="display:none"></div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="admin" value="admin"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" value="admin123"/>
+    </div>
+    <button class="btn-primary full-width" onclick="doLogin()">
+      <i class="fa-solid fa-right-to-bracket"></i> Login
+    </button>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp" style="display:none" class="admin-app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="images/data/logo.jpeg" alt="Logo"/>
+      <span>Admin Panel</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="orders">
+        <i class="fa-solid fa-bag-shopping"></i> Orders
+      </a>
+      <a href="#" class="nav-item" data-page="products">
+        <i class="fa-solid fa-box"></i> Products
+      </a>
+      <a href="#" class="nav-item" data-page="designs">
+        <i class="fa-solid fa-palette"></i> Design Requests
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <i class="fa-solid fa-gear"></i> Settings
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank"><i class="fa-solid fa-store"></i> View Store</a>
+      <button onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-right">
+        <span id="adminName" class="admin-badge"></span>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+          <div class="stat-info"><div class="stat-num" id="stat-orders">0</div><div class="stat-label">Total Orders</div></div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          <div class="stat-info"><div class="stat-num" id="stat-revenue">₹0</div><div class="stat-label">Total Revenue</div></div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-info"><div class="stat-num" id="stat-pending">0</div><div class="stat-label">Pending Orders</div></div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
+          <div class="stat-info"><div class="stat-num" id="stat-products">0</div><div class="stat-label">Products</div></div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-icon"><i class="fa-solid fa-palette"></i></div>
+          <div class="stat-info"><div class="stat-num" id="stat-designs">0</div><div class="stat-label">Design Requests</div></div>
+        </div>
+      </div>
+      <div class="section-card">
+        <h3>Recent Orders</h3>
+        <div class="table-wrap">
+          <table id="recentOrdersTable">
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="recentOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="page-orders" class="page">
+      <div class="page-toolbar">
+        <input type="text" id="orderSearch" placeholder="Search by name, phone, order ID..." oninput="loadOrders()"/>
+        <select id="orderStatusFilter" onchange="loadOrders()">
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="processing">Processing</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="section-card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="page-products" class="page">
+      <div class="page-toolbar">
+        <button class="btn-primary" onclick="openProductModal()">
+          <i class="fa-solid fa-plus"></i> Add Product
+        </button>
+      </div>
+      <div class="section-card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGN REQUESTS -->
+    <div id="page-designs" class="page">
+      <div class="section-card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Phone</th><th>Product</th><th>Qty</th><th>Notes</th><th>Design</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="designsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" class="page">
+      <div class="section-card" style="max-width:480px">
+        <h3>Change Password</h3>
+        <div id="pwMsg" class="alert-success" style="display:none"></div>
+        <div id="pwErr" class="alert-error" style="display:none"></div>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="curPw" placeholder="Current password"/>
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="newPw" placeholder="New password"/>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="confPw" placeholder="Confirm new password"/>
+        </div>
+        <button class="btn-primary" onclick="changePassword()">Update Password</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div id="orderModal" class="modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Order Details</h3>
+      <button onclick="closeModal('orderModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="orderModalBody" class="modal-body"></div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div id="productModal" class="modal" style="display:none">
+  <div class="modal-box wide">
+    <div class="modal-header">
+      <h3 id="productModalTitle">Add Product</h3>
+      <button onclick="closeModal('productModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="productForm" onsubmit="saveProduct(event)">
+        <input type="hidden" id="pId"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Product Name *</label>
+            <input type="text" id="pName" required placeholder="Product name"/>
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="pCategory" required>
+              <option value="mugs">Mugs</option>
+              <option value="tshirts">T-Shirts</option>
+              <option value="gifts">Gifts</option>
+              <option value="nameplate">Name Plates</option>
+              <option value="spiritual">Spiritual Items</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price (₹) *</label>
+            <input type="number" id="pPrice" required min="1"/>
+          </div>
+          <div class="form-group">
+            <label>Original Price (₹) *</label>
+            <input type="number" id="pOriginalPrice" required min="1"/>
+          </div>
+          <div class="form-group">
+            <label>Discount %</label>
+            <input type="number" id="pDiscount" min="0" max="100"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Badge (optional)</label>
+            <input type="text" id="pBadge" placeholder="e.g. Bestseller, New"/>
+          </div>
+          <div class="form-group">
+            <label>Icon class</label>
+            <input type="text" id="pIcon" placeholder="fa-box"/>
+          </div>
+          <div class="form-group">
+            <label>In Stock</label>
+            <select id="pInStock">
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="pDescription" rows="3" placeholder="Product description"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Features (one per line)</label>
+          <textarea id="pFeatures" rows="4" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Product Image</label>
+          <input type="file" id="pImage" accept="image/*"/>
+          <div id="pImagePreview" style="margin-top:8px"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" onclick="closeModal('productModal')">Cancel</button>
+          <button type="submit" class="btn-primary">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -34,7 +34,7 @@ function removeImage() {
   document.getElementById('fileInput').value = '';
 }
 
-function submitUpload() {
+async function submitUpload() {
   const name = document.getElementById('upName')?.value.trim();
   const phone = document.getElementById('upPhone')?.value.trim();
   const product = document.getElementById('upProduct')?.value;
@@ -45,6 +45,19 @@ function submitUpload() {
     showToast('Please fill all required fields', 'error');
     return;
   }
+
+  // Try to save to backend
+  try {
+    const fd = new FormData();
+    fd.append('name', name);
+    fd.append('phone', phone);
+    fd.append('product', product);
+    fd.append('qty', qty);
+    fd.append('notes', notes || '');
+    const imgFile = document.getElementById('fileInput')?.files[0];
+    if (imgFile) fd.append('image', imgFile);
+    await fetch('/api/design-requests', { method: 'POST', body: fd });
+  } catch { /* server offline, still redirect to WhatsApp */ }
 
   const productNames = { mug: 'Custom Mug', tshirt: 'T-Shirt', nameplate: 'Name Plate', gift: 'Gift Item', spiritual: 'Spiritual Item', other: 'Other' };
   const msg = `Hi! I want to place a custom order on Custom Printing Hub.\n\nName: ${name}\nPhone: ${phone}\nProduct: ${productNames[product]}\nQuantity: ${qty}\n${notes ? 'Notes: ' + notes : ''}\n\nI will send my design image now.`;

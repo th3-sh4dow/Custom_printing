@@ -1,5 +1,6 @@
 // ===== HOME PAGE =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProductsFromAPI();
   renderFeaturedProducts();
   startBannerSlider();
 });
@@ -38,10 +39,8 @@ function renderProductCard(p) {
 
 // Banner Slider
 let currentSlide = 0;
-let sliderInterval;
-
 function startBannerSlider() {
-  sliderInterval = setInterval(() => {
+  setInterval(() => {
     const slides = document.querySelectorAll('.slide');
     if (!slides.length) return;
     goSlide((currentSlide + 1) % slides.length);

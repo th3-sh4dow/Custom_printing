@@ -1,5 +1,6 @@
 // ===== PRODUCTS PAGE =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProductsFromAPI();
   const params = new URLSearchParams(window.location.search);
   const cat = params.get('cat') || 'all';
   if (cat !== 'all') {
@@ -17,9 +18,7 @@ function filterProducts() {
 
   let results = getProductsByCategory(cat);
 
-  if (search) {
-    results = results.filter(p => p.name.toLowerCase().includes(search) || p.category.includes(search));
-  }
+  if (search) results = results.filter(p => p.name.toLowerCase().includes(search) || p.category.includes(search));
 
   if (priceRange !== 'all') {
     const [min, max] = priceRange.split('-').map(Number);

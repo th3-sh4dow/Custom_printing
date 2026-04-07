@@ -1,5 +1,6 @@
 // ===== PRODUCT DETAIL PAGE =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProductsFromAPI();
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   const product = getProductById(id);
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </a>
         <div class="product-features">
           <h4>Product Features</h4>
-          <ul>${product.features.map(f => `<li>${f}</li>`).join('')}</ul>
+          <ul>${(product.features || []).map(f => `<li>${f}</li>`).join('')}</ul>
         </div>
       </div>
     </div>`;
