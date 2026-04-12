@@ -131,17 +131,6 @@ img { max-width: 100%; }
 .footer-credit a { color: rgba(255,255,255,0.75); text-decoration: underline; }
 .footer-credit a:hover { color: #fff; }
 
-/* ===== WATERMARK POPUP ===== */
-.sfs-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-.sfs-popup { background: #fff; border-radius: 16px; padding: 36px 32px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative; }
-.sfs-popup .sfs-logo { font-size: 40px; margin-bottom: 12px; }
-.sfs-popup h2 { font-size: 20px; color: #1565C0; margin-bottom: 8px; }
-.sfs-popup p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 20px; }
-.sfs-popup .sfs-link { display: inline-block; background: #1565C0; color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
-.sfs-popup .sfs-link:hover { background: #0D47A1; }
-.sfs-popup .sfs-dismiss { display: block; margin-top: 12px; font-size: 12px; color: #aaa; cursor: pointer; background: none; border: none; }
-.sfs-popup .sfs-dismiss:hover { color: #666; }
-
 /* ===== PAGE LAYOUT (Products Page) ===== */
 .page-layout { display: flex; gap: 20px; max-width: 1200px; margin: 20px auto; padding: 0 20px; }
 .sidebar { width: 220px; flex-shrink: 0; background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); height: fit-content; }
