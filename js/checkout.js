@@ -2,6 +2,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
   await loadProductsFromAPI();
   renderCheckoutSummary();
+  // Prefill from profile if logged in
+  if (typeof prefillCheckoutFromProfile === 'function') {
+    await prefillCheckoutFromProfile();
+  }
 });
 
 function renderCheckoutSummary() {

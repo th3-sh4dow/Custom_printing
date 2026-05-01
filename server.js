@@ -10,6 +10,7 @@ const fs = require('fs');
 const app = express();
 const PORT = 3000;
 const JWT_SECRET = 'cph_admin_secret_2026';
+const USER_JWT_SECRET = 'cph_user_secret_2026';
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 app.use(cors());
@@ -29,6 +30,28 @@ const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 const db = new Database('shop.db');
 
 db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    phone TEXT DEFAULT '',
+    password TEXT NOT NULL,
+    avatar TEXT DEFAULT '',
+    address TEXT DEFAULT '',
+    city TEXT DEFAULT '',
+    state TEXT DEFAULT '',
+    pincode TEXT DEFAULT '',
+    createdAt TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS wishlist (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    productId INTEGER NOT NULL,
+    addedAt TEXT NOT NULL,
+    UNIQUE(userId, productId)
+  );
+
   CREATE TABLE IF NOT EXISTS admins (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
@@ -124,6 +147,132 @@ function authMiddleware(req, res, next) {
     res.status(401).json({ error: 'Invalid token' });
   }
 }
+
+// ── User Auth Middleware ─────────────────────────────────────────────────────
+function userAuthMiddleware(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    req.user = jwt.verify(token, USER_JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// USER AUTH API
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Register
+app.post('/api/user/register', (req, res) => {
+  const { name, email, phone, password } = req.body;
+  if (!name || !email || !password) return res.status(400).json({ error: 'Name, email and password are required' });
+  if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase().trim());
+  if (existing) return res.status(409).json({ error: 'Email already registered' });
+  const hash = bcrypt.hashSync(password, 10);
+  const createdAt = new Date().toISOString();
+  const result = db.prepare('INSERT INTO users (name, email, phone, password, createdAt) VALUES (?, ?, ?, ?, ?)')
+    .run(name.trim(), email.toLowerCase().trim(), phone || '', hash, createdAt);
+  const token = jwt.sign({ id: result.lastInsertRowid, email: email.toLowerCase().trim(), name: name.trim() }, USER_JWT_SECRET, { expiresIn: '30d' });
+  res.json({ success: true, token, user: { id: result.lastInsertRowid, name: name.trim(), email: email.toLowerCase().trim(), phone: phone || '' } });
+});
+
+// Login
+app.post('/api/user/login', (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
+  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase().trim());
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ error: 'Invalid email or password' });
+  }
+  const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, USER_JWT_SECRET, { expiresIn: '30d' });
+  res.json({ success: true, token, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, avatar: user.avatar } });
+});
+
+// Get profile
+app.get('/api/user/profile', userAuthMiddleware, (req, res) => {
+  const user = db.prepare('SELECT id, name, email, phone, avatar, address, city, state, pincode, createdAt FROM users WHERE id = ?').get(req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json(user);
+});
+
+// Update profile
+app.put('/api/user/profile', userAuthMiddleware, (req, res) => {
+  const { name, phone, address, city, state, pincode } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name is required' });
+  db.prepare('UPDATE users SET name=?, phone=?, address=?, city=?, state=?, pincode=? WHERE id=?')
+    .run(name.trim(), phone || '', address || '', city || '', state || '', pincode || '', req.user.id);
+  res.json({ success: true });
+});
+
+// Change password
+app.post('/api/user/change-password', userAuthMiddleware, (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) return res.status(400).json({ error: 'Both passwords required' });
+  if (newPassword.length < 6) return res.status(400).json({ error: 'New password must be at least 6 characters' });
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+  if (!bcrypt.compareSync(currentPassword, user.password)) {
+    return res.status(400).json({ error: 'Current password is incorrect' });
+  }
+  const hash = bcrypt.hashSync(newPassword, 10);
+  db.prepare('UPDATE users SET password = ? WHERE id = ?').run(hash, req.user.id);
+  res.json({ success: true });
+});
+
+// Get user's orders
+app.get('/api/user/orders', userAuthMiddleware, (req, res) => {
+  const user = db.prepare('SELECT email, phone FROM users WHERE id = ?').get(req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const orders = db.prepare('SELECT * FROM orders WHERE email = ? OR phone = ? ORDER BY createdAt DESC')
+    .all(user.email, user.phone);
+  res.json(orders.map(o => ({ ...o, items: JSON.parse(o.items) })));
+});
+
+// Get single order (user)
+app.get('/api/user/orders/:orderId', userAuthMiddleware, (req, res) => {
+  const user = db.prepare('SELECT email, phone FROM users WHERE id = ?').get(req.user.id);
+  const order = db.prepare('SELECT * FROM orders WHERE orderId = ? AND (email = ? OR phone = ?)').get(req.params.orderId, user.email, user.phone);
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+  res.json({ ...order, items: JSON.parse(order.items) });
+});
+
+// Wishlist - get
+app.get('/api/user/wishlist', userAuthMiddleware, (req, res) => {
+  const items = db.prepare(`
+    SELECT w.id, w.productId, w.addedAt, p.name, p.price, p.originalPrice, p.discount, p.image, p.icon, p.badge, p.inStock
+    FROM wishlist w JOIN products p ON w.productId = p.id
+    WHERE w.userId = ? ORDER BY w.addedAt DESC
+  `).all(req.user.id);
+  res.json(items);
+});
+
+// Wishlist - add
+app.post('/api/user/wishlist', userAuthMiddleware, (req, res) => {
+  const { productId } = req.body;
+  if (!productId) return res.status(400).json({ error: 'productId required' });
+  const product = db.prepare('SELECT id FROM products WHERE id = ?').get(productId);
+  if (!product) return res.status(404).json({ error: 'Product not found' });
+  try {
+    db.prepare('INSERT INTO wishlist (userId, productId, addedAt) VALUES (?, ?, ?)').run(req.user.id, productId, new Date().toISOString());
+    res.json({ success: true });
+  } catch {
+    res.status(409).json({ error: 'Already in wishlist' });
+  }
+});
+
+// Wishlist - remove
+app.delete('/api/user/wishlist/:productId', userAuthMiddleware, (req, res) => {
+  db.prepare('DELETE FROM wishlist WHERE userId = ? AND productId = ?').run(req.user.id, req.params.productId);
+  res.json({ success: true });
+});
+
+// Check wishlist status for a product
+app.get('/api/user/wishlist/check/:productId', userAuthMiddleware, (req, res) => {
+  const item = db.prepare('SELECT id FROM wishlist WHERE userId = ? AND productId = ?').get(req.user.id, req.params.productId);
+  res.json({ inWishlist: !!item });
+});
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PUBLIC API
@@ -276,6 +425,31 @@ app.post('/api/admin/change-password', authMiddleware, (req, res) => {
   }
   const hash = bcrypt.hashSync(newPassword, 10);
   db.prepare('UPDATE admins SET password = ? WHERE id = ?').run(hash, req.admin.id);
+  res.json({ success: true });
+});
+
+// ── Admin: Users ─────────────────────────────────────────────────────────────
+app.get('/api/admin/users', authMiddleware, (req, res) => {
+  const { search } = req.query;
+  let query = 'SELECT id, name, email, phone, city, state, createdAt FROM users';
+  const params = [];
+  if (search) {
+    query += ' WHERE (name LIKE ? OR email LIKE ? OR phone LIKE ?)';
+    params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+  }
+  query += ' ORDER BY createdAt DESC';
+  const users = db.prepare(query).all(...params);
+  // attach order count per user
+  const result = users.map(u => {
+    const orderCount = db.prepare('SELECT COUNT(*) as c FROM orders WHERE email = ? OR phone = ?').get(u.email, u.phone).c;
+    return { ...u, orderCount };
+  });
+  res.json(result);
+});
+
+app.delete('/api/admin/users/:id', authMiddleware, (req, res) => {
+  db.prepare('DELETE FROM users WHERE id = ?').run(req.params.id);
+  db.prepare('DELETE FROM wishlist WHERE userId = ?').run(req.params.id);
   res.json({ success: true });
 });
 

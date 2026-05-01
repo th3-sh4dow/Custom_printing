@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Register - Custom Printing Hub</title>
+  <link rel="icon" type="image/jpeg" href="images/data/logo.jpeg"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <div class="logo">
+        <a href="index.html">
+          <img src="images/data/logo.jpeg" alt="Custom Printing Hub" class="logo-img"/>
+        </a>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search mugs, t-shirts, gifts..." id="searchInput"/>
+        <button onclick="doSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <div class="header-actions">
+        <a href="upload.html" class="btn-upload"><i class="fa-solid fa-upload"></i> Upload Design</a>
+        <a href="cart.html" class="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="user-icon"><i class="fa-solid fa-user"></i></a>
+      </div>
+    </div>
+    <nav class="nav-bar">
+      <a href="index.html">Home</a>
+      <a href="products.html">All Products</a>
+      <a href="products.html?cat=mugs">Mugs</a>
+      <a href="products.html?cat=tshirts">T-Shirts</a>
+      <a href="products.html?cat=gifts">Gifts</a>
+      <a href="products.html?cat=nameplate">Name Plates</a>
+      <a href="products.html?cat=spiritual">Spiritual Items</a>
+      <a href="upload.html" class="nav-highlight">🎨 Custom Design</a>
+    </nav>
+  </header>
+
+  <!-- AUTH PAGE -->
+  <div class="auth-page">
+    <div class="auth-container">
+
+      <!-- LEFT PANEL -->
+      <div class="auth-left">
+        <div class="auth-brand">
+          <img src="images/data/logo.jpeg" alt="Logo" class="auth-logo"/>
+          <h2>Custom Printing Hub</h2>
+          <p>Your one-stop shop for custom printed products</p>
+        </div>
+        <div class="auth-features">
+          <div class="auth-feature">
+            <i class="fa-solid fa-truck-fast"></i>
+            <div>
+              <strong>Fast Delivery</strong>
+              <span>Get your custom products delivered quickly</span>
+            </div>
+          </div>
+          <div class="auth-feature">
+            <i class="fa-solid fa-heart"></i>
+            <div>
+              <strong>Save Wishlist</strong>
+              <span>Save your favourite products for later</span>
+            </div>
+          </div>
+          <div class="auth-feature">
+            <i class="fa-solid fa-box-open"></i>
+            <div>
+              <strong>Track Orders</strong>
+              <span>View all your orders and their status</span>
+            </div>
+          </div>
+          <div class="auth-feature">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+              <strong>Secure Account</strong>
+              <span>Your data is safe and encrypted</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL (TABS) -->
+      <div class="auth-right">
+        <!-- TABS -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+          <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginForm" class="auth-form">
+          <h3>Welcome Back!</h3>
+          <p class="auth-sub">Login to your account to continue</p>
+          <div id="loginError" class="auth-alert auth-alert-error" style="display:none"></div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+            <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-lock"></i> Password</label>
+            <div class="input-with-icon">
+              <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password"/>
+              <button type="button" class="toggle-pass" onclick="togglePass('loginPassword', this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <button class="btn-primary full-width auth-btn" id="loginBtn" onclick="doLogin()">
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+          </button>
+          <p class="auth-switch">Don't have an account? <a href="#" onclick="switchTab('register')">Register here</a></p>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="registerForm" class="auth-form" style="display:none">
+          <h3>Create Account</h3>
+          <p class="auth-sub">Join us and start ordering custom products</p>
+          <div id="registerError" class="auth-alert auth-alert-error" style="display:none"></div>
+          <div id="registerSuccess" class="auth-alert auth-alert-success" style="display:none"></div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-user"></i> Full Name</label>
+            <input type="text" id="regName" placeholder="Your full name" autocomplete="name"/>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+            <input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email"/>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-phone"></i> Phone Number <span class="optional">(optional)</span></label>
+            <input type="tel" id="regPhone" placeholder="+91 XXXXX XXXXX" autocomplete="tel"/>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-lock"></i> Password</label>
+            <div class="input-with-icon">
+              <input type="password" id="regPassword" placeholder="Min. 6 characters" autocomplete="new-password"/>
+              <button type="button" class="toggle-pass" onclick="togglePass('regPassword', this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-lock"></i> Confirm Password</label>
+            <div class="input-with-icon">
+              <input type="password" id="regConfirm" placeholder="Repeat your password" autocomplete="new-password"/>
+              <button type="button" class="toggle-pass" onclick="togglePass('regConfirm', this)"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <button class="btn-primary full-width auth-btn" id="registerBtn" onclick="doRegister()">
+            <i class="fa-solid fa-user-plus"></i> Create Account
+          </button>
+          <p class="auth-switch">Already have an account? <a href="#" onclick="switchTab('login')">Login here</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>© 2026 Custom Printing Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Redirect if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      if (isLoggedIn()) {
+        const params = new URLSearchParams(window.location.search);
+        window.location.href = params.get('redirect') || 'profile.html';
+      }
+      // Check if ?tab=register
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'register') switchTab('register');
+    });
+
+    function switchTab(tab) {
+      document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+      document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+      document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+    }
+
+    function togglePass(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      btn.innerHTML = isText ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
+    }
+
+    function setLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.style.opacity = loading ? '0.7' : '1';
+    }
+
+    async function doLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errEl = document.getElementById('loginError');
+      errEl.style.display = 'none';
+
+      if (!email || !password) {
+        errEl.textContent = 'Please enter email and password.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      setLoading('loginBtn', true);
+      try {
+        const res = await fetch('/api/user/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errEl.textContent = data.error || 'Login failed.';
+          errEl.style.display = 'block';
+        } else {
+          saveUserSession(data.token, data.user);
+          const params = new URLSearchParams(window.location.search);
+          window.location.href = params.get('redirect') || 'profile.html';
+        }
+      } catch {
+        errEl.textContent = 'Server error. Please try again.';
+        errEl.style.display = 'block';
+      }
+      setLoading('loginBtn', false);
+    }
+
+    async function doRegister() {
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirm').value;
+      const errEl = document.getElementById('registerError');
+      const sucEl = document.getElementById('registerSuccess');
+      errEl.style.display = 'none';
+      sucEl.style.display = 'none';
+
+      if (!name || !email || !password) {
+        errEl.textContent = 'Name, email and password are required.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (password.length < 6) {
+        errEl.textContent = 'Password must be at least 6 characters.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (password !== confirm) {
+        errEl.textContent = 'Passwords do not match.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      setLoading('registerBtn', true);
+      try {
+        const res = await fetch('/api/user/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errEl.textContent = data.error || 'Registration failed.';
+          errEl.style.display = 'block';
+        } else {
+          saveUserSession(data.token, data.user);
+          sucEl.textContent = 'Account created! Redirecting...';
+          sucEl.style.display = 'block';
+          setTimeout(() => {
+            const params = new URLSearchParams(window.location.search);
+            window.location.href = params.get('redirect') || 'profile.html';
+          }, 1000);
+        }
+      } catch {
+        errEl.textContent = 'Server error. Please try again.';
+        errEl.style.display = 'block';
+      }
+      setLoading('registerBtn', false);
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        if (document.getElementById('loginForm').style.display !== 'none') doLogin();
+        else doRegister();
+      }
+    });
+
+    function doSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (q) window.location.href = `products.html?search=${encodeURIComponent(q)}`;
+    }
+  </script>
+</body>
+</html>
